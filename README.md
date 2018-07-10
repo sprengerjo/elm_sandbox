@@ -1,2 +1,5 @@
 # elm_sandbox
-elm stuff goes here
+
+## Quick Start
+
+Run `elm-test`
