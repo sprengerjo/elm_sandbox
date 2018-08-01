@@ -17,7 +17,7 @@ neighbours cell =
             [ 1, 0, -1 ]
     in
         List.filter (\c -> c /= cell) <|
-            List.concatMap (\x -> (List.map (\y -> ( first (cell) - x, (second cell) - y ))) d) <|
+            List.concatMap (\x -> (List.map (\y -> ( first (cell) - y, (second cell) - x ))) d) <|
                 d
 
 
