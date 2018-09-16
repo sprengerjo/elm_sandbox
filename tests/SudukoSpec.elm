@@ -3,6 +3,7 @@ module SudukoSpec exposing (..)
 import Suduko exposing (..)
 import Expect exposing (Expectation)
 import Test exposing (..)
+import List exposing (..)
 
 
 validCol0 =
@@ -22,18 +23,33 @@ aValidSolution =
     ]
 
 
+aInvalidSolution =
+    [ [ 1, 2, 3, 4, 5, 6, 7, 8, 9 ]
+    , [ 2, 3, 1, 5, 6, 4, 8, 9, 7 ]
+    , [ 3, 1, 2, 6, 4, 5, 9, 7, 8 ]
+    , [ 4, 5, 6, 7, 8, 9, 1, 2, 3 ]
+    , [ 5, 6, 4, 8, 9, 7, 2, 3, 1 ]
+    , [ 6, 4, 5, 9, 7, 8, 3, 1, 2 ]
+    , [ 7, 8, 9, 1, 2, 3, 4, 5, 6 ]
+    , [ 8, 9, 7, 2, 3, 1, 5, 6, 4 ]
+    , [ 9, 7, 8, 3, 1, 2, 6, 4, 5 ]
+    ]
+
+
 suite : Test
 suite =
     describe "suduko"
         [ describe "solution validator"
             [ test "empty solution is not valid" <|
-                \_ -> Expect.equal True (validSolution [ [] ])
+                \_ -> Expect.equal True (validateSolution [ [] ])
             , test "1-2-3 valid solution" <|
-                \_ -> Expect.equal True (validSolution [ [ 1, 2, 3 ], [ 2, 3, 1 ], [ 3, 1, 2 ] ])
+                \_ -> Expect.equal True (validateSolution [ [ 1, 2, 3 ], [ 2, 3, 1 ], [ 3, 1, 2 ] ])
             , test "a invalid solution should resolve in False" <|
-                \_ -> Expect.equal False (validSolution [ [ 1, 2, 1 ], [ 2, 3, 1 ], [ 3, 1, 2 ] ])
+                \_ -> Expect.equal False (interleave aInvalidSolution)
             , test "aValidSolution should be valid" <|
-                \_ -> Expect.equal True (validSolution aValidSolution)
+                \_ -> Expect.equal True (validateSolution aValidSolution)
+            , test "aInValidSolution should be invalid" <|
+                \_ -> Expect.equal False (validateSolution aInvalidSolution)
             ]
         , describe "helper functions - row validation"
             [ test "empty row is valid" <|

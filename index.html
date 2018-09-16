@@ -1,5 +1,5 @@
 <!DOCTYPE HTML>
-<html><head><meta charset="UTF-8"><title>GameOfLifeUi</title><style>html,head,body { padding:0; margin:0; }
+<html><head><meta charset="UTF-8"><title>SudokuUi</title><style>html,head,body { padding:0; margin:0; }
 body { font-family: calibri, helvetica, arial, sans-serif; }</style><script type="text/javascript">
 (function() {
 'use strict';
@@ -10206,129 +10206,7 @@ var _elm_community$list_extra$List_Extra$last = function (items) {
 		}
 	}
 };
-var _sprengerjo$elm_sandbox$GameOfLife$countNeighbours = F2(
-	function (cell, cells) {
-		return A2(
-			_elm_community$list_extra$List_Extra$count,
-			function (y) {
-				return _elm_lang$core$Native_Utils.eq(y, cell);
-			},
-			cells);
-	});
-var _sprengerjo$elm_sandbox$GameOfLife$flatten2D = function (list) {
-	return A3(
-		_elm_lang$core$List$foldr,
-		F2(
-			function (x, y) {
-				return A2(_elm_lang$core$Basics_ops['++'], x, y);
-			}),
-		{ctor: '[]'},
-		list);
-};
-var _sprengerjo$elm_sandbox$GameOfLife$neighbours = function (cell) {
-	var d = {
-		ctor: '::',
-		_0: 1,
-		_1: {
-			ctor: '::',
-			_0: 0,
-			_1: {
-				ctor: '::',
-				_0: -1,
-				_1: {ctor: '[]'}
-			}
-		}
-	};
-	return A2(
-		_elm_lang$core$List$filter,
-		function (c) {
-			return !_elm_lang$core$Native_Utils.eq(c, cell);
-		},
-		A2(
-			_elm_lang$core$List$concatMap,
-			function (x) {
-				return A2(
-					_elm_lang$core$List$map,
-					function (y) {
-						return {
-							ctor: '_Tuple2',
-							_0: _elm_lang$core$Tuple$first(cell) - y,
-							_1: _elm_lang$core$Tuple$second(cell) - x
-						};
-					},
-					d);
-			},
-			d));
-};
-var _sprengerjo$elm_sandbox$GameOfLife$alive = F2(
-	function (n, isAlive) {
-		return (_elm_lang$core$Native_Utils.eq(n, 2) && isAlive) || _elm_lang$core$Native_Utils.eq(n, 3);
-	});
-var _sprengerjo$elm_sandbox$GameOfLife$filterLiving = F2(
-	function (livingCells, xs) {
-		return A2(
-			_elm_lang$core$List$filter,
-			function (x) {
-				return A2(
-					_sprengerjo$elm_sandbox$GameOfLife$alive,
-					A2(_sprengerjo$elm_sandbox$GameOfLife$countNeighbours, x, xs),
-					A2(_elm_lang$core$List$member, x, livingCells));
-			},
-			xs);
-	});
-var _sprengerjo$elm_sandbox$GameOfLife$next = function (cells) {
-	return _elm_community$list_extra$List_Extra$unique(
-		A2(
-			_sprengerjo$elm_sandbox$GameOfLife$filterLiving,
-			cells,
-			_sprengerjo$elm_sandbox$GameOfLife$flatten2D(
-				A2(
-					_elm_lang$core$List$map,
-					function (x) {
-						return _sprengerjo$elm_sandbox$GameOfLife$neighbours(x);
-					},
-					cells))));
-};
-var _sprengerjo$elm_sandbox$GameOfLifeUi$checkbox = F3(
-	function (msg, name, step) {
-		return A2(
-			_elm_lang$html$Html$label,
-			{
-				ctor: '::',
-				_0: _elm_lang$html$Html_Attributes$style(
-					{
-						ctor: '::',
-						_0: {ctor: '_Tuple2', _0: 'padding', _1: '20px'},
-						_1: {ctor: '[]'}
-					}),
-				_1: {ctor: '[]'}
-			},
-			{
-				ctor: '::',
-				_0: A2(
-					_elm_lang$html$Html$input,
-					{
-						ctor: '::',
-						_0: _elm_lang$html$Html_Attributes$type_('checkbox'),
-						_1: {
-							ctor: '::',
-							_0: _elm_lang$html$Html_Events$onClick(msg),
-							_1: {
-								ctor: '::',
-								_0: _elm_lang$html$Html_Attributes$checked(step),
-								_1: {ctor: '[]'}
-							}
-						}
-					},
-					{ctor: '[]'}),
-				_1: {
-					ctor: '::',
-					_0: _elm_lang$html$Html$text(name),
-					_1: {ctor: '[]'}
-				}
-			});
-	});
-var _sprengerjo$elm_sandbox$GameOfLifeUi$groupInto = F2(
+var _sprengerjo$elm_sandbox$SudokuUi$groupInto = F2(
 	function (n, lst) {
 		return _elm_lang$core$Native_Utils.eq(
 			_elm_lang$core$List$length(lst),
@@ -10336,30 +10214,12 @@ var _sprengerjo$elm_sandbox$GameOfLifeUi$groupInto = F2(
 			ctor: '::',
 			_0: A2(_elm_lang$core$List$take, n, lst),
 			_1: A2(
-				_sprengerjo$elm_sandbox$GameOfLifeUi$groupInto,
+				_sprengerjo$elm_sandbox$SudokuUi$groupInto,
 				n,
 				A2(_elm_lang$core$List$drop, n, lst))
 		};
 	});
-var _sprengerjo$elm_sandbox$GameOfLifeUi$livingCells = function (grid) {
-	return A3(
-		_elm_community$list_extra$List_Extra$indexedFoldl,
-		F3(
-			function (y, cells, curr) {
-				return A2(
-					_elm_lang$core$List$append,
-					curr,
-					A2(
-						_elm_lang$core$List$map,
-						function (x) {
-							return {ctor: '_Tuple2', _0: y, _1: x};
-						},
-						A2(_elm_community$list_extra$List_Extra$elemIndices, true, cells)));
-			}),
-		{ctor: '[]'},
-		grid);
-};
-var _sprengerjo$elm_sandbox$GameOfLifeUi$toggle = F2(
+var _sprengerjo$elm_sandbox$SudokuUi$toggle = F2(
 	function (pos, grid) {
 		return A3(
 			_elm_community$list_extra$List_Extra$updateAt,
@@ -10367,89 +10227,83 @@ var _sprengerjo$elm_sandbox$GameOfLifeUi$toggle = F2(
 			A2(
 				_elm_community$list_extra$List_Extra$updateAt,
 				_elm_lang$core$Tuple$second(pos),
-				_elm_lang$core$Basics$not),
+				function (n) {
+					return (_elm_lang$core$Native_Utils.cmp(n, 9) > -1) ? 1 : (n + 1);
+				}),
 			grid);
 	});
-var _sprengerjo$elm_sandbox$GameOfLifeUi$toggleCells = F2(
-	function (grid, cells) {
-		return A3(
-			_elm_lang$core$List$foldr,
-			F2(
-				function (cell, curr) {
-					return A2(_sprengerjo$elm_sandbox$GameOfLifeUi$toggle, cell, curr);
-				}),
-			grid,
-			cells);
-	});
-var _sprengerjo$elm_sandbox$GameOfLifeUi$_p0 = {ctor: '_Tuple2', _0: 50, _1: 50};
-var _sprengerjo$elm_sandbox$GameOfLifeUi$columns = _sprengerjo$elm_sandbox$GameOfLifeUi$_p0._0;
-var _sprengerjo$elm_sandbox$GameOfLifeUi$rows = _sprengerjo$elm_sandbox$GameOfLifeUi$_p0._1;
-var _sprengerjo$elm_sandbox$GameOfLifeUi$initGrid = A2(
-	_elm_lang$core$List$repeat,
-	_sprengerjo$elm_sandbox$GameOfLifeUi$rows,
-	A2(_elm_lang$core$List$repeat, _sprengerjo$elm_sandbox$GameOfLifeUi$columns, false));
-var _sprengerjo$elm_sandbox$GameOfLifeUi$init = {
-	ctor: '_Tuple2',
-	_0: {grid: _sprengerjo$elm_sandbox$GameOfLifeUi$initGrid, step: false, stepCount: 0},
-	_1: _elm_lang$core$Platform_Cmd$none
-};
-var _sprengerjo$elm_sandbox$GameOfLifeUi$update = F2(
+var _sprengerjo$elm_sandbox$SudokuUi$update = F2(
 	function (msg, model) {
-		var _p1 = msg;
-		switch (_p1.ctor) {
+		var _p0 = msg;
+		switch (_p0.ctor) {
 			case 'Toggle':
 				return {
 					ctor: '_Tuple2',
 					_0: _elm_lang$core$Native_Utils.update(
 						model,
 						{
-							grid: A2(_sprengerjo$elm_sandbox$GameOfLifeUi$toggle, _p1._0, model.grid)
+							grid: A2(_sprengerjo$elm_sandbox$SudokuUi$toggle, _p0._0, model.grid)
 						}),
 					_1: _elm_lang$core$Platform_Cmd$none
 				};
-			case 'Next':
-				return {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						model,
-						{step: !model.step}),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
-			case 'Tick':
-				return {
-					ctor: '_Tuple2',
-					_0: function () {
-						var cells = _sprengerjo$elm_sandbox$GameOfLifeUi$livingCells(model.grid);
-						var anythingAlive = _elm_lang$core$Native_Utils.cmp(
-							_elm_lang$core$List$length(cells),
-							0) > 0;
-						return model.step ? _elm_lang$core$Native_Utils.update(
-							model,
-							{
-								stepCount: model.stepCount + 1,
-								step: anythingAlive,
-								grid: A2(
-									_sprengerjo$elm_sandbox$GameOfLifeUi$toggleCells,
-									_sprengerjo$elm_sandbox$GameOfLifeUi$initGrid,
-									_sprengerjo$elm_sandbox$GameOfLife$next(cells))
-							}) : model;
-					}(),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
+			case 'Initialize':
+				return {ctor: '_Tuple2', _0: _p0._0, _1: _elm_lang$core$Platform_Cmd$none};
 			default:
-				return {ctor: '_Tuple2', _0: _p1._0, _1: _elm_lang$core$Platform_Cmd$none};
+				return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
 		}
 	});
-var _sprengerjo$elm_sandbox$GameOfLifeUi$cellSize = 10;
-var _sprengerjo$elm_sandbox$GameOfLifeUi$cellStyle = function (on) {
+var _sprengerjo$elm_sandbox$SudokuUi$toggleCells = F2(
+	function (grid, cells) {
+		return A3(
+			_elm_lang$core$List$foldr,
+			F2(
+				function (cell, curr) {
+					return A2(_sprengerjo$elm_sandbox$SudokuUi$toggle, cell, curr);
+				}),
+			grid,
+			cells);
+	});
+var _sprengerjo$elm_sandbox$SudokuUi$images = function (index) {
+	var _p1 = index;
+	switch (_p1) {
+		case 1:
+			return 'images/fluttershy.png';
+		case 2:
+			return 'images/rainbow.jpg';
+		case 3:
+			return 'images/spike.jpg';
+		case 4:
+			return 'images/celestia.png';
+		case 5:
+			return 'images/rarity.jpg';
+		case 6:
+			return 'images/applejack.jpg';
+		case 7:
+			return 'images/pinkie.jpg';
+		case 8:
+			return 'images/moon.png';
+		default:
+			return 'images/twilight.jpg';
+	}
+};
+var _sprengerjo$elm_sandbox$SudokuUi$_p2 = {ctor: '_Tuple2', _0: 9, _1: 9};
+var _sprengerjo$elm_sandbox$SudokuUi$columns = _sprengerjo$elm_sandbox$SudokuUi$_p2._0;
+var _sprengerjo$elm_sandbox$SudokuUi$rows = _sprengerjo$elm_sandbox$SudokuUi$_p2._1;
+var _sprengerjo$elm_sandbox$SudokuUi$initGrid = A2(
+	_elm_lang$core$List$repeat,
+	_sprengerjo$elm_sandbox$SudokuUi$rows,
+	A2(_elm_lang$core$List$range, 1, 9));
+var _sprengerjo$elm_sandbox$SudokuUi$init = {
+	ctor: '_Tuple2',
+	_0: {grid: _sprengerjo$elm_sandbox$SudokuUi$initGrid},
+	_1: _elm_lang$core$Platform_Cmd$none
+};
+var _sprengerjo$elm_sandbox$SudokuUi$cellSize = 60;
+var _sprengerjo$elm_sandbox$SudokuUi$cellStyle = function (on) {
 	return _elm_lang$html$Html_Attributes$style(
 		{
 			ctor: '::',
-			_0: {
-				ctor: '_Tuple2',
-				_0: 'background',
-				_1: on ? 'black' : 'white'
-			},
+			_0: {ctor: '_Tuple2', _0: 'background', _1: 'white'},
 			_1: {
 				ctor: '::',
 				_0: {
@@ -10457,7 +10311,7 @@ var _sprengerjo$elm_sandbox$GameOfLifeUi$cellStyle = function (on) {
 					_0: 'width',
 					_1: A2(
 						_elm_lang$core$Basics_ops['++'],
-						_elm_lang$core$Basics$toString(_sprengerjo$elm_sandbox$GameOfLifeUi$cellSize),
+						_elm_lang$core$Basics$toString(_sprengerjo$elm_sandbox$SudokuUi$cellSize),
 						'px')
 				},
 				_1: {
@@ -10467,7 +10321,7 @@ var _sprengerjo$elm_sandbox$GameOfLifeUi$cellStyle = function (on) {
 						_0: 'height',
 						_1: A2(
 							_elm_lang$core$Basics_ops['++'],
-							_elm_lang$core$Basics$toString(_sprengerjo$elm_sandbox$GameOfLifeUi$cellSize),
+							_elm_lang$core$Basics$toString(_sprengerjo$elm_sandbox$SudokuUi$cellSize),
 							'px')
 					},
 					_1: {
@@ -10479,7 +10333,11 @@ var _sprengerjo$elm_sandbox$GameOfLifeUi$cellStyle = function (on) {
 							_1: {
 								ctor: '::',
 								_0: {ctor: '_Tuple2', _0: 'border-width', _1: '0.5px'},
-								_1: {ctor: '[]'}
+								_1: {
+									ctor: '::',
+									_0: {ctor: '_Tuple2', _0: 'text-align', _1: 'center'},
+									_1: {ctor: '[]'}
+								}
 							}
 						}
 					}
@@ -10487,23 +10345,21 @@ var _sprengerjo$elm_sandbox$GameOfLifeUi$cellStyle = function (on) {
 			}
 		});
 };
-var _sprengerjo$elm_sandbox$GameOfLifeUi$stepDelay = 200;
-var _sprengerjo$elm_sandbox$GameOfLifeUi$Model = F3(
-	function (a, b, c) {
-		return {grid: a, step: b, stepCount: c};
-	});
-var _sprengerjo$elm_sandbox$GameOfLifeUi$Tick = function (a) {
+var _sprengerjo$elm_sandbox$SudokuUi$stepDelay = 200;
+var _sprengerjo$elm_sandbox$SudokuUi$Model = function (a) {
+	return {grid: a};
+};
+var _sprengerjo$elm_sandbox$SudokuUi$Tick = function (a) {
 	return {ctor: 'Tick', _0: a};
 };
-var _sprengerjo$elm_sandbox$GameOfLifeUi$subscriptions = function (model) {
-	return A2(_elm_lang$core$Time$every, _sprengerjo$elm_sandbox$GameOfLifeUi$stepDelay, _sprengerjo$elm_sandbox$GameOfLifeUi$Tick);
+var _sprengerjo$elm_sandbox$SudokuUi$subscriptions = function (model) {
+	return A2(_elm_lang$core$Time$every, _sprengerjo$elm_sandbox$SudokuUi$stepDelay, _sprengerjo$elm_sandbox$SudokuUi$Tick);
 };
-var _sprengerjo$elm_sandbox$GameOfLifeUi$Next = {ctor: 'Next'};
-var _sprengerjo$elm_sandbox$GameOfLifeUi$Toggle = F2(
+var _sprengerjo$elm_sandbox$SudokuUi$Toggle = F2(
 	function (a, b) {
 		return {ctor: 'Toggle', _0: a, _1: b};
 	});
-var _sprengerjo$elm_sandbox$GameOfLifeUi$cell = F3(
+var _sprengerjo$elm_sandbox$SudokuUi$cell = F3(
 	function (x, y, on) {
 		return A2(
 			_elm_lang$html$Html$div,
@@ -10511,22 +10367,38 @@ var _sprengerjo$elm_sandbox$GameOfLifeUi$cell = F3(
 				ctor: '::',
 				_0: _elm_lang$html$Html_Events$onClick(
 					A2(
-						_sprengerjo$elm_sandbox$GameOfLifeUi$Toggle,
+						_sprengerjo$elm_sandbox$SudokuUi$Toggle,
 						{ctor: '_Tuple2', _0: x, _1: y},
 						on)),
 				_1: {
 					ctor: '::',
-					_0: _sprengerjo$elm_sandbox$GameOfLifeUi$cellStyle(on),
+					_0: _sprengerjo$elm_sandbox$SudokuUi$cellStyle(on),
 					_1: {ctor: '[]'}
 				}
 			},
 			{
 				ctor: '::',
-				_0: _elm_lang$html$Html$text(' '),
+				_0: A2(
+					_elm_lang$html$Html$img,
+					{
+						ctor: '::',
+						_0: _elm_lang$html$Html_Attributes$src(
+							_sprengerjo$elm_sandbox$SudokuUi$images(on)),
+						_1: {
+							ctor: '::',
+							_0: _elm_lang$html$Html_Attributes$width(_sprengerjo$elm_sandbox$SudokuUi$cellSize),
+							_1: {
+								ctor: '::',
+								_0: _elm_lang$html$Html_Attributes$height(_sprengerjo$elm_sandbox$SudokuUi$cellSize),
+								_1: {ctor: '[]'}
+							}
+						}
+					},
+					{ctor: '[]'}),
 				_1: {ctor: '[]'}
 			});
 	});
-var _sprengerjo$elm_sandbox$GameOfLifeUi$row = F2(
+var _sprengerjo$elm_sandbox$SudokuUi$row = F2(
 	function (x, row) {
 		return A2(
 			_elm_lang$html$Html$div,
@@ -10542,11 +10414,11 @@ var _sprengerjo$elm_sandbox$GameOfLifeUi$row = F2(
 			},
 			A2(
 				_elm_lang$core$List$indexedMap,
-				_sprengerjo$elm_sandbox$GameOfLifeUi$cell(x),
+				_sprengerjo$elm_sandbox$SudokuUi$cell(x),
 				row));
 	});
-var _sprengerjo$elm_sandbox$GameOfLifeUi$view = function (_p2) {
-	var _p3 = _p2;
+var _sprengerjo$elm_sandbox$SudokuUi$view = function (_p3) {
+	var _p4 = _p3;
 	return A2(
 		_elm_lang$html$Html$div,
 		{ctor: '[]'},
@@ -10555,45 +10427,26 @@ var _sprengerjo$elm_sandbox$GameOfLifeUi$view = function (_p2) {
 			_0: A2(
 				_elm_lang$html$Html$div,
 				{ctor: '[]'},
-				A2(_elm_lang$core$List$indexedMap, _sprengerjo$elm_sandbox$GameOfLifeUi$row, _p3.grid)),
+				A2(_elm_lang$core$List$indexedMap, _sprengerjo$elm_sandbox$SudokuUi$row, _p4.grid)),
 			_1: {
 				ctor: '::',
 				_0: A2(
 					_elm_lang$html$Html$br,
 					{ctor: '[]'},
 					{ctor: '[]'}),
-				_1: {
-					ctor: '::',
-					_0: A2(
-						_elm_lang$html$Html$fieldset,
-						{ctor: '[]'},
-						{
-							ctor: '::',
-							_0: A3(_sprengerjo$elm_sandbox$GameOfLifeUi$checkbox, _sprengerjo$elm_sandbox$GameOfLifeUi$Next, 'stepper', _p3.step),
-							_1: {
-								ctor: '::',
-								_0: _elm_lang$html$Html$text(
-									A2(
-										_elm_lang$core$Basics_ops['++'],
-										'generation: ',
-										_elm_lang$core$Basics$toString(_p3.stepCount))),
-								_1: {ctor: '[]'}
-							}
-						}),
-					_1: {ctor: '[]'}
-				}
+				_1: {ctor: '[]'}
 			}
 		});
 };
-var _sprengerjo$elm_sandbox$GameOfLifeUi$main = _elm_lang$html$Html$program(
-	{init: _sprengerjo$elm_sandbox$GameOfLifeUi$init, view: _sprengerjo$elm_sandbox$GameOfLifeUi$view, update: _sprengerjo$elm_sandbox$GameOfLifeUi$update, subscriptions: _sprengerjo$elm_sandbox$GameOfLifeUi$subscriptions})();
-var _sprengerjo$elm_sandbox$GameOfLifeUi$Initialize = function (a) {
+var _sprengerjo$elm_sandbox$SudokuUi$main = _elm_lang$html$Html$program(
+	{init: _sprengerjo$elm_sandbox$SudokuUi$init, view: _sprengerjo$elm_sandbox$SudokuUi$view, update: _sprengerjo$elm_sandbox$SudokuUi$update, subscriptions: _sprengerjo$elm_sandbox$SudokuUi$subscriptions})();
+var _sprengerjo$elm_sandbox$SudokuUi$Initialize = function (a) {
 	return {ctor: 'Initialize', _0: a};
 };
 var Elm = {};
-Elm['GameOfLifeUi'] = Elm['GameOfLifeUi'] || {};
-if (typeof _sprengerjo$elm_sandbox$GameOfLifeUi$main !== 'undefined') {
-    _sprengerjo$elm_sandbox$GameOfLifeUi$main(Elm['GameOfLifeUi'], 'GameOfLifeUi', undefined);
+Elm['SudokuUi'] = Elm['SudokuUi'] || {};
+if (typeof _sprengerjo$elm_sandbox$SudokuUi$main !== 'undefined') {
+    _sprengerjo$elm_sandbox$SudokuUi$main(Elm['SudokuUi'], 'SudokuUi', undefined);
 }
 
 if (typeof define === "function" && define['amd'])
@@ -10625,4 +10478,4 @@ for (var publicModule in Elm)
 }
 
 }).call(this);
-</script></head><body><script type="text/javascript">Elm.GameOfLifeUi.fullscreen()</script></body></html>
+</script></head><body><script type="text/javascript">Elm.SudokuUi.fullscreen()</script></body></html>
