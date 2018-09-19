@@ -21,12 +21,29 @@ split i list =
 
 
 splitBy9 list =
-    case list of
-        [] ->
-            []
+    let
+        d =
+            9
+    in
+        case list of
+            [] ->
+                []
 
-        xs ->
-            (zip3 (take 9 list) (take 9 (drop 9 list)) (drop 18 list)) :: splitBy9 (drop 27 list)
+            xs ->
+                (zip3 (take d list) (take d (drop d list)) (drop (d * 2) list)) :: splitBy9 (drop (d * 3) list)
+
+
+splitBy4 list =
+    let
+        d =
+            4
+    in
+        case list of
+            [] ->
+                []
+
+            xs ->
+                (zip (take d list) (take d (drop d list))) :: splitBy4 (drop (d * 2) list)
 
 
 unzip3 list =
@@ -42,7 +59,20 @@ unzip3 list =
                 a :: b :: c :: unzip3 xs
 
 
-interleave list =
+unzip2 list =
+    case list of
+        [] ->
+            []
+
+        x :: xs ->
+            let
+                ( a, b ) =
+                    x
+            in
+                a :: b :: unzip2 xs
+
+
+validateBlock9x9 list =
     foldl (\curr acc -> acc && (validRow curr)) True <|
         map unzip3 <|
             split 3 <|
@@ -50,6 +80,26 @@ interleave list =
                     splitBy9 <|
                         flatten2D <|
                             transpose list
+
+
+interleave4x4 list =
+    map unzip2 <|
+        split 2 <|
+            flatten2D <|
+                splitBy4 <|
+                    flatten2D <|
+                        transpose list
+
+
+validateBlock3x3 list =
+    foldl (\curr acc -> acc && (validRow curr)) True <| interleave4x4 list
+
+
+validateBlocks list =
+    if (length list) == 9 then
+        validateBlock9x9 list
+    else
+        validateBlock3x3 list
 
 
 extractCol : Int -> List number -> number
@@ -74,5 +124,5 @@ validateColsAndRows solution i curr acc =
 
 validateSolution : List (List Int) -> Bool
 validateSolution solution =
-    interleave solution
+    validateBlocks solution
         && indexedFoldl (validateColsAndRows solution) True solution

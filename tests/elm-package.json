@@ -4,6 +4,7 @@
     "repository": "https://github.com/sprengerjo/elm-sandbox.git",
     "license": "BSD3",
     "source-directories": [
+        "../src",
         "..",
         "."
     ],

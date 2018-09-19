@@ -36,23 +36,46 @@ aInvalidSolution =
     ]
 
 
+valid4x4 =
+    [ [ 1, 2, 3, 4 ]
+    , [ 4, 5, 6, 7 ]
+    , [ 2, 3, 4, 5 ]
+    , [ 6, 7, 8, 9 ]
+    ]
+
+
+invalid4x4 =
+    [ [ 1, 2, 3, 4 ]
+    , [ 4, 5, 6, 7 ]
+    , [ 2, 3, 4, 5 ]
+    , [ 6, 7, 8, 4 ]
+    ]
+
+
 suite : Test
 suite =
     describe "suduko"
         [ describe "solution validator"
             [ test "empty solution is not valid" <|
                 \_ -> Expect.equal True (validateSolution [ [] ])
-            , test "1-2-3 valid solution" <|
-                \_ -> Expect.equal True (validateSolution [ [ 1, 2, 3 ], [ 2, 3, 1 ], [ 3, 1, 2 ] ])
-            , test "a invalid solution should resolve in False" <|
-                \_ -> Expect.equal False (interleave aInvalidSolution)
+            , test "4x4 valid solution" <|
+                \_ ->
+                    Expect.equal True (validateSolution valid4x4)
+            , test "4x4 invalid solution" <|
+                \_ -> Expect.equal False (validateSolution invalid4x4)
             , test "aValidSolution should be valid" <|
                 \_ -> Expect.equal True (validateSolution aValidSolution)
             , test "aInValidSolution should be invalid" <|
                 \_ -> Expect.equal False (validateSolution aInvalidSolution)
             ]
         , describe "helper functions - row validation"
-            [ test "empty row is valid" <|
+            [ test "interleave3x3 valid solution should resolve in False" <|
+                \_ ->
+                    Expect.equal [ [ 1, 2, 4, 5 ], [ 2, 3, 6, 7 ], [ 3, 4, 6, 7 ], [ 4, 5, 8, 9 ] ]
+                        (interleave4x4 valid4x4)
+            , test "a invalid solution should resolve in False" <|
+                \_ -> Expect.equal False (validateBlocks aInvalidSolution)
+            , test "empty row is valid" <|
                 \_ -> Expect.equal True (validRow [])
             , test "single int row is valid" <|
                 \_ -> Expect.equal True (validRow [ 1 ])

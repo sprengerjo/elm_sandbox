@@ -10206,18 +10206,214 @@ var _elm_community$list_extra$List_Extra$last = function (items) {
 		}
 	}
 };
-var _sprengerjo$elm_sandbox$SudokuUi$groupInto = F2(
-	function (n, lst) {
-		return _elm_lang$core$Native_Utils.eq(
-			_elm_lang$core$List$length(lst),
-			0) ? {ctor: '[]'} : {
+var _sprengerjo$elm_sandbox$Suduko$validRow = function (row) {
+	return _elm_community$list_extra$List_Extra$allDifferent(row);
+};
+var _sprengerjo$elm_sandbox$Suduko$extractCol = F2(
+	function (index, row) {
+		return A2(
+			_elm_lang$core$Maybe$withDefault,
+			0,
+			A2(_elm_community$list_extra$List_Extra$getAt, index, row));
+	});
+var _sprengerjo$elm_sandbox$Suduko$validCol = F2(
+	function (index, solution) {
+		return _sprengerjo$elm_sandbox$Suduko$validRow(
+			A2(
+				_elm_lang$core$List$map,
+				_sprengerjo$elm_sandbox$Suduko$extractCol(index),
+				solution));
+	});
+var _sprengerjo$elm_sandbox$Suduko$validateColsAndRows = F4(
+	function (solution, i, curr, acc) {
+		return acc && (A2(_sprengerjo$elm_sandbox$Suduko$validCol, i, solution) && _sprengerjo$elm_sandbox$Suduko$validRow(curr));
+	});
+var _sprengerjo$elm_sandbox$Suduko$unzip2 = function (list) {
+	var _p0 = list;
+	if (_p0.ctor === '[]') {
+		return {ctor: '[]'};
+	} else {
+		var _p1 = _p0._0;
+		var a = _p1._0;
+		var b = _p1._1;
+		return {
 			ctor: '::',
-			_0: A2(_elm_lang$core$List$take, n, lst),
-			_1: A2(
-				_sprengerjo$elm_sandbox$SudokuUi$groupInto,
-				n,
-				A2(_elm_lang$core$List$drop, n, lst))
+			_0: a,
+			_1: {
+				ctor: '::',
+				_0: b,
+				_1: _sprengerjo$elm_sandbox$Suduko$unzip2(_p0._1)
+			}
 		};
+	}
+};
+var _sprengerjo$elm_sandbox$Suduko$unzip3 = function (list) {
+	var _p2 = list;
+	if (_p2.ctor === '[]') {
+		return {ctor: '[]'};
+	} else {
+		var _p3 = _p2._0;
+		var a = _p3._0;
+		var b = _p3._1;
+		var c = _p3._2;
+		return {
+			ctor: '::',
+			_0: a,
+			_1: {
+				ctor: '::',
+				_0: b,
+				_1: {
+					ctor: '::',
+					_0: c,
+					_1: _sprengerjo$elm_sandbox$Suduko$unzip3(_p2._1)
+				}
+			}
+		};
+	}
+};
+var _sprengerjo$elm_sandbox$Suduko$splitBy4 = function (list) {
+	var d = 4;
+	var _p4 = list;
+	if (_p4.ctor === '[]') {
+		return {ctor: '[]'};
+	} else {
+		return {
+			ctor: '::',
+			_0: A2(
+				_elm_community$list_extra$List_Extra$zip,
+				A2(_elm_lang$core$List$take, d, list),
+				A2(
+					_elm_lang$core$List$take,
+					d,
+					A2(_elm_lang$core$List$drop, d, list))),
+			_1: _sprengerjo$elm_sandbox$Suduko$splitBy4(
+				A2(_elm_lang$core$List$drop, d * 2, list))
+		};
+	}
+};
+var _sprengerjo$elm_sandbox$Suduko$splitBy9 = function (list) {
+	var d = 9;
+	var _p5 = list;
+	if (_p5.ctor === '[]') {
+		return {ctor: '[]'};
+	} else {
+		return {
+			ctor: '::',
+			_0: A3(
+				_elm_community$list_extra$List_Extra$zip3,
+				A2(_elm_lang$core$List$take, d, list),
+				A2(
+					_elm_lang$core$List$take,
+					d,
+					A2(_elm_lang$core$List$drop, d, list)),
+				A2(_elm_lang$core$List$drop, d * 2, list)),
+			_1: _sprengerjo$elm_sandbox$Suduko$splitBy9(
+				A2(_elm_lang$core$List$drop, d * 3, list))
+		};
+	}
+};
+var _sprengerjo$elm_sandbox$Suduko$split = F2(
+	function (i, list) {
+		var _p6 = A2(_elm_lang$core$List$take, i, list);
+		if (_p6.ctor === '[]') {
+			return {ctor: '[]'};
+		} else {
+			return {
+				ctor: '::',
+				_0: _p6,
+				_1: A2(
+					_sprengerjo$elm_sandbox$Suduko$split,
+					i,
+					A2(_elm_lang$core$List$drop, i, list))
+			};
+		}
+	});
+var _sprengerjo$elm_sandbox$Suduko$flatten2D = function (list) {
+	return A3(
+		_elm_lang$core$List$foldr,
+		F2(
+			function (x, y) {
+				return A2(_elm_lang$core$Basics_ops['++'], x, y);
+			}),
+		{ctor: '[]'},
+		list);
+};
+var _sprengerjo$elm_sandbox$Suduko$validateBlock9x9 = function (list) {
+	return A3(
+		_elm_lang$core$List$foldl,
+		F2(
+			function (curr, acc) {
+				return acc && _sprengerjo$elm_sandbox$Suduko$validRow(curr);
+			}),
+		true,
+		A2(
+			_elm_lang$core$List$map,
+			_sprengerjo$elm_sandbox$Suduko$unzip3,
+			A2(
+				_sprengerjo$elm_sandbox$Suduko$split,
+				3,
+				_sprengerjo$elm_sandbox$Suduko$flatten2D(
+					_sprengerjo$elm_sandbox$Suduko$splitBy9(
+						_sprengerjo$elm_sandbox$Suduko$flatten2D(
+							_elm_community$list_extra$List_Extra$transpose(list)))))));
+};
+var _sprengerjo$elm_sandbox$Suduko$interleave4x4 = function (list) {
+	return A2(
+		_elm_lang$core$List$map,
+		_sprengerjo$elm_sandbox$Suduko$unzip2,
+		A2(
+			_sprengerjo$elm_sandbox$Suduko$split,
+			2,
+			_sprengerjo$elm_sandbox$Suduko$flatten2D(
+				_sprengerjo$elm_sandbox$Suduko$splitBy4(
+					_sprengerjo$elm_sandbox$Suduko$flatten2D(
+						_elm_community$list_extra$List_Extra$transpose(list))))));
+};
+var _sprengerjo$elm_sandbox$Suduko$validateBlock3x3 = function (list) {
+	return A3(
+		_elm_lang$core$List$foldl,
+		F2(
+			function (curr, acc) {
+				return acc && _sprengerjo$elm_sandbox$Suduko$validRow(curr);
+			}),
+		true,
+		_sprengerjo$elm_sandbox$Suduko$interleave4x4(list));
+};
+var _sprengerjo$elm_sandbox$Suduko$validateBlocks = function (list) {
+	return _elm_lang$core$Native_Utils.eq(
+		_elm_lang$core$List$length(list),
+		9) ? _sprengerjo$elm_sandbox$Suduko$validateBlock9x9(list) : _sprengerjo$elm_sandbox$Suduko$validateBlock3x3(list);
+};
+var _sprengerjo$elm_sandbox$Suduko$validateSolution = function (solution) {
+	return _sprengerjo$elm_sandbox$Suduko$validateBlocks(solution) && A3(
+		_elm_community$list_extra$List_Extra$indexedFoldl,
+		_sprengerjo$elm_sandbox$Suduko$validateColsAndRows(solution),
+		true,
+		solution);
+};
+var _sprengerjo$elm_sandbox$SudokuUi$innerStyle = _elm_lang$html$Html_Attributes$style(
+	{
+		ctor: '::',
+		_0: {ctor: '_Tuple2', _0: 'display', _1: 'table'},
+		_1: {
+			ctor: '::',
+			_0: {ctor: '_Tuple2', _0: 'margin', _1: 'auto'},
+			_1: {ctor: '[]'}
+		}
+	});
+var _sprengerjo$elm_sandbox$SudokuUi$gameStyle = _elm_lang$html$Html_Attributes$style(
+	{
+		ctor: '::',
+		_0: {ctor: '_Tuple2', _0: 'padding', _1: '50px'},
+		_1: {
+			ctor: '::',
+			_0: {ctor: '_Tuple2', _0: 'width', _1: '100%'},
+			_1: {
+				ctor: '::',
+				_0: {ctor: '_Tuple2', _0: 'text-align', _1: 'center'},
+				_1: {ctor: '[]'}
+			}
+		}
 	});
 var _sprengerjo$elm_sandbox$SudokuUi$toggle = F2(
 	function (pos, grid) {
@@ -10237,12 +10433,14 @@ var _sprengerjo$elm_sandbox$SudokuUi$update = F2(
 		var _p0 = msg;
 		switch (_p0.ctor) {
 			case 'Toggle':
+				var next = A2(_sprengerjo$elm_sandbox$SudokuUi$toggle, _p0._0, model.grid);
 				return {
 					ctor: '_Tuple2',
 					_0: _elm_lang$core$Native_Utils.update(
 						model,
 						{
-							grid: A2(_sprengerjo$elm_sandbox$SudokuUi$toggle, _p0._0, model.grid)
+							grid: next,
+							valid: _sprengerjo$elm_sandbox$Suduko$validateSolution(next)
 						}),
 					_1: _elm_lang$core$Platform_Cmd$none
 				};
@@ -10286,19 +10484,45 @@ var _sprengerjo$elm_sandbox$SudokuUi$images = function (index) {
 			return 'images/twilight.jpg';
 	}
 };
-var _sprengerjo$elm_sandbox$SudokuUi$_p2 = {ctor: '_Tuple2', _0: 9, _1: 9};
-var _sprengerjo$elm_sandbox$SudokuUi$columns = _sprengerjo$elm_sandbox$SudokuUi$_p2._0;
-var _sprengerjo$elm_sandbox$SudokuUi$rows = _sprengerjo$elm_sandbox$SudokuUi$_p2._1;
+var _sprengerjo$elm_sandbox$SudokuUi$successPaths = function (valid) {
+	var _p2 = valid;
+	if (_p2 === true) {
+		return 'images/correct_flower.gif';
+	} else {
+		return 'images/wrong.jpeg';
+	}
+};
+var _sprengerjo$elm_sandbox$SudokuUi$cells = 4;
+var _sprengerjo$elm_sandbox$SudokuUi$_p3 = {ctor: '_Tuple2', _0: _sprengerjo$elm_sandbox$SudokuUi$cells, _1: _sprengerjo$elm_sandbox$SudokuUi$cells};
+var _sprengerjo$elm_sandbox$SudokuUi$columns = _sprengerjo$elm_sandbox$SudokuUi$_p3._0;
+var _sprengerjo$elm_sandbox$SudokuUi$rows = _sprengerjo$elm_sandbox$SudokuUi$_p3._1;
 var _sprengerjo$elm_sandbox$SudokuUi$initGrid = A2(
 	_elm_lang$core$List$repeat,
 	_sprengerjo$elm_sandbox$SudokuUi$rows,
-	A2(_elm_lang$core$List$range, 1, 9));
+	A2(_elm_lang$core$List$repeat, _sprengerjo$elm_sandbox$SudokuUi$cells, 0));
 var _sprengerjo$elm_sandbox$SudokuUi$init = {
 	ctor: '_Tuple2',
-	_0: {grid: _sprengerjo$elm_sandbox$SudokuUi$initGrid},
+	_0: {grid: _sprengerjo$elm_sandbox$SudokuUi$initGrid, valid: false},
 	_1: _elm_lang$core$Platform_Cmd$none
 };
-var _sprengerjo$elm_sandbox$SudokuUi$cellSize = 60;
+var _sprengerjo$elm_sandbox$SudokuUi$cellSize = 100;
+var _sprengerjo$elm_sandbox$SudokuUi$imgSrc = function (n) {
+	var size = (_elm_lang$core$Native_Utils.cmp(n, 0) > 0) ? _sprengerjo$elm_sandbox$SudokuUi$cellSize : 0;
+	return {
+		ctor: '::',
+		_0: _elm_lang$html$Html_Attributes$src(
+			_sprengerjo$elm_sandbox$SudokuUi$images(n)),
+		_1: {
+			ctor: '::',
+			_0: _elm_lang$html$Html_Attributes$width(size),
+			_1: {
+				ctor: '::',
+				_0: _elm_lang$html$Html_Attributes$height(size),
+				_1: {ctor: '[]'}
+			}
+		}
+	};
+};
 var _sprengerjo$elm_sandbox$SudokuUi$cellStyle = function (on) {
 	return _elm_lang$html$Html_Attributes$style(
 		{
@@ -10333,11 +10557,7 @@ var _sprengerjo$elm_sandbox$SudokuUi$cellStyle = function (on) {
 							_1: {
 								ctor: '::',
 								_0: {ctor: '_Tuple2', _0: 'border-width', _1: '0.5px'},
-								_1: {
-									ctor: '::',
-									_0: {ctor: '_Tuple2', _0: 'text-align', _1: 'center'},
-									_1: {ctor: '[]'}
-								}
+								_1: {ctor: '[]'}
 							}
 						}
 					}
@@ -10346,9 +10566,10 @@ var _sprengerjo$elm_sandbox$SudokuUi$cellStyle = function (on) {
 		});
 };
 var _sprengerjo$elm_sandbox$SudokuUi$stepDelay = 200;
-var _sprengerjo$elm_sandbox$SudokuUi$Model = function (a) {
-	return {grid: a};
-};
+var _sprengerjo$elm_sandbox$SudokuUi$Model = F2(
+	function (a, b) {
+		return {grid: a, valid: b};
+	});
 var _sprengerjo$elm_sandbox$SudokuUi$Tick = function (a) {
 	return {ctor: 'Tick', _0: a};
 };
@@ -10380,20 +10601,7 @@ var _sprengerjo$elm_sandbox$SudokuUi$cell = F3(
 				ctor: '::',
 				_0: A2(
 					_elm_lang$html$Html$img,
-					{
-						ctor: '::',
-						_0: _elm_lang$html$Html_Attributes$src(
-							_sprengerjo$elm_sandbox$SudokuUi$images(on)),
-						_1: {
-							ctor: '::',
-							_0: _elm_lang$html$Html_Attributes$width(_sprengerjo$elm_sandbox$SudokuUi$cellSize),
-							_1: {
-								ctor: '::',
-								_0: _elm_lang$html$Html_Attributes$height(_sprengerjo$elm_sandbox$SudokuUi$cellSize),
-								_1: {ctor: '[]'}
-							}
-						}
-					},
+					_sprengerjo$elm_sandbox$SudokuUi$imgSrc(on),
 					{ctor: '[]'}),
 				_1: {ctor: '[]'}
 			});
@@ -10417,24 +10625,52 @@ var _sprengerjo$elm_sandbox$SudokuUi$row = F2(
 				_sprengerjo$elm_sandbox$SudokuUi$cell(x),
 				row));
 	});
-var _sprengerjo$elm_sandbox$SudokuUi$view = function (_p3) {
-	var _p4 = _p3;
+var _sprengerjo$elm_sandbox$SudokuUi$view = function (_p4) {
+	var _p5 = _p4;
 	return A2(
 		_elm_lang$html$Html$div,
-		{ctor: '[]'},
+		{
+			ctor: '::',
+			_0: _sprengerjo$elm_sandbox$SudokuUi$gameStyle,
+			_1: {ctor: '[]'}
+		},
 		{
 			ctor: '::',
 			_0: A2(
 				_elm_lang$html$Html$div,
-				{ctor: '[]'},
-				A2(_elm_lang$core$List$indexedMap, _sprengerjo$elm_sandbox$SudokuUi$row, _p4.grid)),
+				{
+					ctor: '::',
+					_0: _sprengerjo$elm_sandbox$SudokuUi$innerStyle,
+					_1: {ctor: '[]'}
+				},
+				A2(_elm_lang$core$List$indexedMap, _sprengerjo$elm_sandbox$SudokuUi$row, _p5.grid)),
 			_1: {
 				ctor: '::',
 				_0: A2(
 					_elm_lang$html$Html$br,
 					{ctor: '[]'},
 					{ctor: '[]'}),
-				_1: {ctor: '[]'}
+				_1: {
+					ctor: '::',
+					_0: A2(
+						_elm_lang$html$Html$img,
+						{
+							ctor: '::',
+							_0: _elm_lang$html$Html_Attributes$src(
+								_sprengerjo$elm_sandbox$SudokuUi$successPaths(_p5.valid)),
+							_1: {
+								ctor: '::',
+								_0: _elm_lang$html$Html_Attributes$width(_sprengerjo$elm_sandbox$SudokuUi$cellSize),
+								_1: {
+									ctor: '::',
+									_0: _elm_lang$html$Html_Attributes$height(_sprengerjo$elm_sandbox$SudokuUi$cellSize),
+									_1: {ctor: '[]'}
+								}
+							}
+						},
+						{ctor: '[]'}),
+					_1: {ctor: '[]'}
+				}
 			}
 		});
 };

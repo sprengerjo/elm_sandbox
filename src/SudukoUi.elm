@@ -1,6 +1,7 @@
 module SudokuUi exposing (..)
 
-import List exposing (range)
+import Suduko exposing (validateSolution)
+import List exposing (range, repeat)
 import List.Extra exposing (updateAt, indexedFoldl, elemIndices)
 import Html exposing (input, Html, Attribute, div, img, text, button, br, fieldset, label)
 import Html.Attributes exposing (style, class, type_, checked, src, height, width)
@@ -8,13 +9,14 @@ import Html.Events exposing (onClick)
 import Time exposing (Time, second)
 
 
-type alias Model =
-    { grid : Grid
-    }
-
-
 type alias Grid =
     List (List Int)
+
+
+type alias Model =
+    { grid : Grid
+    , valid : Bool
+    }
 
 
 type Msg
@@ -28,32 +30,75 @@ stepDelay =
 
 
 cellSize =
-    60
+    100
+
+
+cells =
+    4
 
 
 ( columns, rows ) =
-    ( 9, 9 )
+    ( cells, cells )
+
+
+successPaths valid =
+    case valid of
+        True ->
+            "images/correct_flower.gif"
+
+        False ->
+            "images/wrong.jpeg"
+
 
 images index =
     case index of
-        1 -> "images/fluttershy.png"
-        2 -> "images/rainbow.jpg"
-        3 -> "images/spike.jpg"
-        4 -> "images/celestia.png"
-        5 -> "images/rarity.jpg"
-        6 -> "images/applejack.jpg"
-        7 -> "images/pinkie.jpg"
-        8 -> "images/moon.png"
-        x -> "images/twilight.jpg"
+        1 ->
+            "images/fluttershy.png"
+
+        2 ->
+            "images/rainbow.jpg"
+
+        3 ->
+            "images/spike.jpg"
+
+        4 ->
+            "images/celestia.png"
+
+        5 ->
+            "images/rarity.jpg"
+
+        6 ->
+            "images/applejack.jpg"
+
+        7 ->
+            "images/pinkie.jpg"
+
+        8 ->
+            "images/moon.png"
+
+        x ->
+            "images/twilight.jpg"
+
+
+imgSrc n =
+    let
+        size =
+            if n > 0 then
+                cellSize
+            else
+                0
+    in
+        [ src (images n), width size, height size ]
+
 
 initGrid : Grid
 initGrid =
-    (List.repeat rows <| range 1 9)
+    (repeat rows <| repeat cells 0)
 
 
 init : ( Model, Cmd Msg )
 init =
-    ( { grid = initGrid }, Cmd.none )
+    ( { grid = initGrid, valid = False }, Cmd.none )
 
 
 subscriptions : Model -> Sub Msg
@@ -94,15 +139,24 @@ cell x y on =
         [ onClick (Toggle ( x, y ) on)
         , cellStyle on
         ]
-        [ img [ src (images on), width cellSize, height cellSize ] [] ]
+        [ img (imgSrc on) [] ]
 
 
-groupInto : Int -> List a -> List (List a)
-groupInto n lst =
-    if List.length lst == 0 then
-        []
-    else
-        (List.take n lst) :: (groupInto n (List.drop n lst))
+gameStyle : Attribute msg
+gameStyle =
+    style
+        [ ( "padding", "50px" )
+        , ( "width", "100%" )
+        , ( "text-align", "center" )
+        ]
+
+
+innerStyle : Attribute msg
+innerStyle =
+    style
+        [ ( "display", "table" )
+        , ( "margin", "auto" )
+        ]
 
 
 cellStyle : Int -> Attribute msg
@@ -114,15 +168,15 @@ cellStyle on =
         , ( "float", "left" )
         , ( "border", "solid" )
         , ( "border-width", "0.5px" )
-        , ( "text-align", "center" )
         ]
 
 
 view : Model -> Html Msg
-view { grid } =
-    div []
-        [ div [] (List.indexedMap row grid)
+view { grid, valid } =
+    div [ gameStyle ]
+        [ div [ innerStyle ] (List.indexedMap row grid)
         , br [] []
+        , img [ src (successPaths valid), width cellSize, height cellSize ] []
         ]
 
 
@@ -130,7 +184,11 @@ update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         Toggle pos state ->
-            ( { model | grid = toggle pos model.grid }, Cmd.none )
+            let
+                next =
+                    toggle pos model.grid
+            in
+                ( { model | grid = next, valid = validateSolution next }, Cmd.none )
 
         Initialize initial ->
             ( initial, Cmd.none )
